@@ -22,26 +22,8 @@ class Sniffer:
         class_name=os.path.basename(__name__)
         self.logger = logging.getLogger('wifi-monitor' + '.'+class_name)
         self.recorder = recorder
+    #end constructor
 
-    def create_logger():
-        script_name=os.path.basename(__file__)
-        logger = logging.getLogger(script_name)
-        logger.setLevel(logging.DEBUG)
-
-        ch = logging.StreamHandler()
-        ch.setLevel(logging.DEBUG)
-
-        fh = logging.FileHandler('wifi-monitor.log') 
-        fh.setLevel(logging.DEBUG)
-
-        formatter = logging.Formatter('%(asctime)s [%(name)s] [%(levelname)s]:  %(message)s')
-        ch.setFormatter(formatter)
-        fh.setFormatter(formatter)
-
-        logger.addHandler(ch)
-        logger.addHandler(fh)
-
-        return logger
 
     def process_packet(self, scappy_packet):
         """
@@ -54,8 +36,8 @@ class Sniffer:
         if scappy_packet.haslayer(Dot11):
        
             #The 802.11 protocol occaionslly calls to send packets out to clear the air from contention
-            #and will send packets to the access point with no source MAC. Since we are interested
-            #in tracking clients, we want to ignore these packets
+            #and will send packets to the access point with no source MAC. Since we are only interested
+            #in tracking clients and AP beacons, we want to ignore these packets
             if(scappy_packet.addr2 is not None):
                 p = packet.Packet()
                 p.src_mac = scappy_packet.addr2
@@ -83,6 +65,9 @@ class Sniffer:
     #end log_client
 
     def start(self):
+        """
+        begins to sniff all traffic off the air.
+        """
         self.logger.info('starting wireless sniffer')
         sniff(iface="wlan0", prn=self.process_packet, store=0)
         self.logger.info('shut down wireless sniffer')
@@ -92,7 +77,10 @@ class Sniffer:
 
 
 def main():
-    logger = create_logger()
+    script_name=os.path.basename(__file__)
+    logger = logging.getLogger(script_name)
+    
+    
     logger.info('Starting program')
 
     logger.info('Begin sniffing')
