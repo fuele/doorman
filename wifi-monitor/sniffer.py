@@ -10,6 +10,7 @@ to the disk
 import logging
 from scapy.all import *
 import packet
+import file_recorder
 
 
 class Sniffer:
@@ -17,10 +18,10 @@ class Sniffer:
     A wireless network monitor that looks for clients and available networks
     """
 
-    def __init__(self):
+    def __init__(self, recorder):
         class_name=os.path.basename(__name__)
         self.logger = logging.getLogger('wifi-monitor' + '.'+class_name)
-        pass
+        self.recorder = recorder
 
     def create_logger():
         script_name=os.path.basename(__file__)
@@ -77,6 +78,7 @@ class Sniffer:
         Records a list of all clients
         """
         self.logger.debug(p.src_mac + "=>" + p.dst_mac)
+        self.recorder.add_client(p)
 
     #end log_client
 
