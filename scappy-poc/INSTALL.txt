@@ -1,0 +1,10 @@
+first install pip.
+
+$ sudo aptitude install python3-pip
+
+Then install scapy
+
+$ pip3 install scapy
+$ sudo pip3 install scapy
+
+Sniffing requires administrative privileges
