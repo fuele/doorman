@@ -59,7 +59,6 @@ class Sniffer:
         """
         Records a list of all clients
         """
-        self.logger.debug(p.src_mac + "=>" + p.dst_mac)
         self.recorder.add_client(p)
 
     #end log_client
