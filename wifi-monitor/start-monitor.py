@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 
 import logging
+import logging.handlers
 import sniffer
 import file_recorder
 
@@ -11,10 +12,15 @@ def create_logger():
     ch = logging.StreamHandler()
     ch.setLevel(logging.DEBUG)
 
+    fh = logging.handlers.RotatingFileHandler('wifi-monitor.log', maxBytes=1024, backupCount=1)
+    fh.setLevel(logging.DEBUG)
+
     formatter = logging.Formatter('%(asctime)s [%(name)s] [%(levelname)s]: %(message)s')
     ch.setFormatter(formatter)
+    fh.setFormatter(formatter)
 
     logger.addHandler(ch)
+    logger.addHandler(fh)
     return logger
 
 def main():
