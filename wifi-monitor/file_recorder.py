@@ -13,6 +13,7 @@ class File_Recorder:
         self.logger = logging.getLogger('wifi-monitor' + '.' + class_name)
         self.clients = dict()
         self.client_ttl_sec = 900 
+        self.nicknames = dict()
     #end constructor
 
 
@@ -35,10 +36,15 @@ class File_Recorder:
         """
         
         self.logger.debug("Updating the client file to contain " + str(len(self.clients)) + " clients") 
+        self.load_nicknames()
         self.client_file = open('clients.txt','w')
 
         for key in self.clients:
-            self.client_file.write(self.clients[key].src_mac + "\n")
+            if key in self.nicknames:
+                self.client_file.write(self.nicknames[key])
+            else:
+                self.logger.warn("Detcted a new, unknown device " + key)
+                self.client_file.write('Unknown device: '+ key+ "\n")
 
         self.client_file.close()
     #end function
@@ -71,5 +77,25 @@ class File_Recorder:
 
         
     #end function
+
+    def load_nicknames(self):
+        """
+        Populate the nickname dictionary with known mac addresses
+        """
+
+        self.logger.debug("loading nickname list")
+
+        with open('known_macs.csv','r') as f:
+            lines = f.readlines()
+
+        #clear the old nickname list
+        self.nicknames = dict()
+
+        for line in lines:
+            columns = line.split(',')
+            self.nicknames[columns[0]]=columns[1]
+        #end for
+    #end function
+
 
 #end class
