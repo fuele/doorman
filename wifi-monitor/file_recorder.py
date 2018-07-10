@@ -37,14 +37,20 @@ class File_Recorder:
         
         self.logger.debug("Updating the client file to contain " + str(len(self.clients)) + " clients") 
         self.load_nicknames()
-        self.client_file = open('clients.txt','w')
+        self.client_file = open('../www/public/index.html','w')
+
+        self.client_file.write('<html>')
+        self.client_file.write('<h1>Who\'s here now?</h1>')
 
         for key in self.clients:
             if key in self.nicknames:
-                self.client_file.write(self.nicknames[key])
+                self.client_file.write(self.nicknames[key] + '<br>')
             else:
                 self.logger.warn("Detcted a new, unknown device " + key)
                 self.client_file.write('Unknown device: '+ key+ "\n")
+        
+        
+        self.client_file.write('</html>')
 
         self.client_file.close()
     #end function
