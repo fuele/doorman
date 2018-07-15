@@ -3,7 +3,13 @@
 	<title>Who's here now?</title>
 	<script src='scripts/jquery-3.3.1.min.js'></script>
 <script>
+
 $(document).ready(()=>{
+    refreshClients();
+});
+
+function refreshClients(){
+    $('#clientList').empty()
     $.ajax({
 	    dataType: "json",
             url: '/api/clients',
@@ -14,12 +20,13 @@ $(document).ready(()=>{
 		});
 	    }
     });
-})
+}
 </script>
 
 </head>
 <body>
 	<h1>Who's here now?</h1>
+	<button id="button" onclick="refreshClients()">Refresh</button>
 	<div>
 		<ul id='clientList'>
 		</ul>
