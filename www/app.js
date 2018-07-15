@@ -36,9 +36,11 @@ app.get('/api/clients', (req, res) => {
     })
 })
 
-app.get('/', (req, res)=> {
-    res.send('Hello World!')
-});
+//app.get('/', (req, res)=> {
+//    res.send('Hello World!')
+//});
+
+app.use('/', express.static(__dirname + '/public'))
 
 
 MongoClient.connect(dburi, (err, client) => {

@@ -1,0 +1,28 @@
+<html>
+<head>
+	<title>Who's here now?</title>
+	<script src='scripts/jquery-3.3.1.min.js'></script>
+<script>
+$(document).ready(()=>{
+    $.ajax({
+	    dataType: "json",
+            url: '/api/clients',
+	    success: function (data) {
+	        $.each(data, (i, item) => {
+                    console.log(item);
+		    $('#clientList').append('<li>' + item.nick + '</li>');
+		});
+	    }
+    });
+})
+</script>
+
+</head>
+<body>
+	<h1>Who's here now?</h1>
+	<div>
+		<ul id='clientList'>
+		</ul>
+	</div>
+</body>
+</html>
