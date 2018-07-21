@@ -3,7 +3,8 @@
 import logging
 import logging.handlers
 import sniffer
-import file_recorder
+import timed_buffer
+#import file_recorder
 
 def create_logger():
     logger = logging.getLogger('wifi-monitor')
@@ -27,9 +28,11 @@ def main():
     logger = create_logger()
     logger.info('Starting program')
 
-    recorder = file_recorder.File_Recorder()
+    #recorder = file_recorder.File_Recorder()
 
-    monitor = sniffer.Sniffer(recorder)
+    buff = timed_buffer.Timed_Buffer(10)
+
+    monitor = sniffer.Sniffer(buff)
     monitor.start()
 
     logger.info('Exiting program')

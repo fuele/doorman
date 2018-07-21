@@ -59,7 +59,7 @@ class Sniffer:
         """
         Records a list of all clients
         """
-        self.recorder.add_client(p)
+        self.recorder.add_client_packet(p)
 
     #end log_client
 

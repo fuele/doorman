@@ -3,14 +3,14 @@ var app = express()
 var path = require('path')
 var port = 3000
 
+const dbconfig = require('./config/db')
+
 var MongoClient = require('mongodb').MongoClient
-var dburi = 'mongodb://localhost:27017'
 var dbName = 'doorman'
 var currentClientsCollection = 'currentClients'
 var nicknameCollection = 'macNicknames'
 
 var db
-
 
 
 //This function is currently not in use
@@ -41,12 +41,12 @@ app.get('/api/clients', (req, res) => {
 app.use('/', express.static(__dirname + '/public'))
 
 
-MongoClient.connect(dburi, (err, client) => {
+MongoClient.connect(dbconfig.url, (err, client) => {
     if(err){
         console.log(err)
     }else{
 	db = client.db(dbName)
-	console.log('Connected to db ' + dbName + ' at ' + dburi)
+	console.log('Connected to db ' + dbName )
         app.listen(port, () => {
             console.log('Example app listening on port ' + port)
             //console.log(path.join(__dirname,'public'))

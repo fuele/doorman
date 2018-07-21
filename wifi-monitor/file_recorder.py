@@ -6,6 +6,7 @@ import datetime
 class File_Recorder:
     """
     Records sniffer activity to a file on the hard drive
+    The only public function required is add_client
     """
 
     def __init__ (self):
@@ -18,7 +19,7 @@ class File_Recorder:
 
 
 
-    def add_client(self, client_packet):
+    def add_client_packet(self, client_packet):
 
         if(client_packet.src_mac not in self.clients):
             self.logger.debug("Found unique client " + client_packet.src_mac + ".")
