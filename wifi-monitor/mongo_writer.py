@@ -5,6 +5,7 @@ import datetime
 import pymongo
 import configparser
 import mongo_dao
+import nickname_resolver
 
 class Mongo_Writer:
     """
@@ -15,6 +16,7 @@ class Mongo_Writer:
         class_name = os.path.basename(__name__)
         self.logger = logging.getLogger('wifi-monitor' + '.' + class_name)
         self.dao = dao
+        self.resolver = nickname_resolver.Nickname_Resolver(dao)
 
     #end function
  
@@ -24,7 +26,13 @@ class Mongo_Writer:
         """
         self.logger.debug("Writing packet to DB." + client_packet.src_mac)
 
-        self.dao.insert('currentClients',{'mac':client_packet.src_mac, 'time':client_packet.timestamp})
+        nick = self.resolver.get_nick(client_packet.src_mac)
+
+        self.dao.insert('currentClients',{
+            'mac':client_packet.src_mac, 
+            'nick':nick,
+            'time':client_packet.timestamp
+        })
         self.logger.debug('finished adding document to  db')
         
 

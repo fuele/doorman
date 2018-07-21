@@ -6,6 +6,7 @@ import sniffer
 import timed_buffer
 import mongo_writer
 import mongo_dao
+import nickname_resolver
 
 def create_logger():
     logger = logging.getLogger('wifi-monitor')
@@ -31,9 +32,11 @@ def main():
 
     dao = mongo_dao.Mongo_DAO()
     dao.connect()
+    
     writer = mongo_writer.Mongo_Writer(dao)
     buff = timed_buffer.Timed_Buffer(writer,5)
     monitor = sniffer.Sniffer(buff)
+
     monitor.start()
 
     logger.info('Exiting program')

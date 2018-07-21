@@ -62,8 +62,20 @@ class Mongo_DAO:
         self.logger.debug('done droping ' + collection)
 
     #end function
-        
 
+    def find(self, collection, query, formatting):
+        self.logger.debug('Entering find')
+        self.logger.debug('collection' + collection + ' query ' + str(query))
+        col = self.db.macNicknames
+
+        self.logger.debug(col)
+
+        cursor = col.find(query, formatting) 
+
+        self.logger.debug('Exiting find')
+        
+        return cursor
+    #end function
 
 
 #end class
