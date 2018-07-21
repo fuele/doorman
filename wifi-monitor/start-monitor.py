@@ -4,7 +4,7 @@ import logging
 import logging.handlers
 import sniffer
 import timed_buffer
-#import file_recorder
+import mongo_writer
 
 def create_logger():
     logger = logging.getLogger('wifi-monitor')
@@ -28,9 +28,8 @@ def main():
     logger = create_logger()
     logger.info('Starting program')
 
-    #recorder = file_recorder.File_Recorder()
-
-    buff = timed_buffer.Timed_Buffer(10)
+    writer = mongo_writer.Mongo_Writer()
+    buff = timed_buffer.Timed_Buffer(writer,5)
 
     monitor = sniffer.Sniffer(buff)
     monitor.start()
