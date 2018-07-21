@@ -11,8 +11,9 @@ var nicknameCollection = 'macNicknames'
 
 var db
 
-//app.use(express.static(path.join(__dirname,'public')))
 
+
+//This function is currently not in use
 function getNick(mac){
     console.log('Looking for nickname for ' +mac)
     db.collection(nicknameCollection).find({'mac':mac},{_id:0}).toArray( (err,results) => {
@@ -36,9 +37,6 @@ app.get('/api/clients', (req, res) => {
     })
 })
 
-//app.get('/', (req, res)=> {
-//    res.send('Hello World!')
-//});
 
 app.use('/', express.static(__dirname + '/public'))
 
