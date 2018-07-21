@@ -44,6 +44,7 @@ class Sniffer:
                 p.dst_mac = scappy_packet.addr1
             
                 if(p.dst_mac == router_mac ):
+                    self.logger.debug('found an interesting packet')
                     self.log_client(p)
 
             #get SSID from beacons
@@ -59,7 +60,7 @@ class Sniffer:
         """
         Records a list of all clients
         """
-        self.recorder.add_client(p)
+        self.recorder.add_client_packet(p)
 
     #end log_client
 

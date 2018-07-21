@@ -1,15 +1,60 @@
-var express = require('express');
-var app = express();
-var path = require('path');
+var express = require('express')
+var app = express()
+var path = require('path')
+var port = 3000
 
-//app.use(express.static('/home/donovan/code/doorman/www/public'));
-app.use(express.static(path.join(__dirname,'public')));
+const dbconfig = require('./config/db')
 
-//app.get('/', function (req, res) {
-//    res.send('Hello World!');
-//});
+var MongoClient = require('mongodb').MongoClient
+var dbName = 'doorman'
+var currentClientsCollection = 'currentClients'
+var nicknameCollection = 'macNicknames'
 
-app.listen(80, function() {
-    console.log('Example app listening on port 80.');
-    console.log(path.join(__dirname,'public'));
-});
+var db
+
+
+//This function is currently not in use
+function getNick(mac){
+    console.log('Looking for nickname for ' +mac)
+    db.collection(nicknameCollection).find({'mac':mac},{_id:0}).toArray( (err,results) => {
+        if(err){
+            console.log('Failed to find mac in nickname collection')
+	    return {'mac':mac, 'nick':'unknown device'}
+	}else{
+            console.log('Found nickname')
+	    console.log('results: ' + results)
+	    return(results)
+	}//end if
+    })//end function
+}//end function
+
+
+//list all the clients currently connected to the wifi
+app.get('/api/clients', (req, res) => {
+    db.collection(currentClientsCollection).find({},{_id:0}).toArray( (err, results) => {
+        console.log(results)
+        res.send(results)
+    })
+})
+
+
+app.use('/', express.static(__dirname + '/public'))
+
+
+MongoClient.connect(dbconfig.url, (err, client) => {
+    if(err){
+        console.log(err)
+    }else{
+	db = client.db(dbName)
+	console.log('Connected to db ' + dbName )
+        app.listen(port, () => {
+            console.log('Example app listening on port ' + port)
+            //console.log(path.join(__dirname,'public'))
+        })//end listen
+    }//end else
+}) //end connect
+
+
+
+
+
