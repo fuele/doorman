@@ -34,7 +34,7 @@ def main():
     dao.connect()
     
     writer = mongo_writer.Mongo_Writer(dao)
-    buff = timed_buffer.Timed_Buffer(writer,5)
+    buff = timed_buffer.Timed_Buffer(writer,60)
     monitor = sniffer.Sniffer(buff)
 
     monitor.start()

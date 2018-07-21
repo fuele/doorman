@@ -17,10 +17,11 @@ class Timed_Buffer:
         class_name=os.path.basename(__name__)
         self.logger = logging.getLogger('wifi-monitor' + '.' + class_name)
         self.logger.debug('created Timed_Buffer')
-        self.clients = dict()
+        #self.clients = dict()
         self.ttl = ttl
-        self.last_flush_time = datetime.datetime.now()
+        #self.last_flush_time = datetime.datetime.now()
         self.writer = writer
+        self.flush()
     #end constructor
 
     def add_client_packet(self, client_packet):
@@ -37,6 +38,7 @@ class Timed_Buffer:
         if client_packet.src_mac not in self.clients:
             self.logger.debug("Found unique client " + client_packet.src_mac + ".")
             self.clients[client_packet.src_mac] = client_packet
+            self.writer.write(client_packet)
 
         if self.should_flush():
             self.flush()
@@ -76,9 +78,9 @@ class Timed_Buffer:
         self.writer.drop_current_clients()        
 
 
-        for key in self.clients:
-            self.logger.debug('sending something to writer')
-            self.writer.write(self.clients[key])
+        #for key in self.clients:
+        #    self.logger.debug('sending something to writer')
+        #    self.writer.write(self.clients[key])
 
         self.clients = dict()
         self.logger.debug('done flushing buffer')
