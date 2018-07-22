@@ -1,4 +1,3 @@
-import datetime
 
 class Packet:
     """
@@ -8,4 +7,4 @@ class Packet:
     def __init__(self):
         self.src_mac = None 
         self.dst_mac = None
-        self.timestamp = datetime.datetime.now() 
+        self.time = None

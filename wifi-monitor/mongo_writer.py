@@ -1,7 +1,7 @@
 import packet
 import logging
 import os
-import datetime
+from datetime import datetime
 import pymongo
 import configparser
 import mongo_dao
@@ -31,7 +31,7 @@ class Mongo_Writer:
         self.dao.insert('currentClients',{
             'mac':client_packet.src_mac, 
             'nick':nick,
-            'time':client_packet.timestamp
+            'time':client_packet.time
         })
         self.logger.debug('finished adding document to  db')
         
