@@ -1,6 +1,6 @@
 
 import logging
-import datetime
+from datetime import datetime
 import packet
 import os
 
@@ -17,9 +17,7 @@ class Timed_Buffer:
         class_name=os.path.basename(__name__)
         self.logger = logging.getLogger('wifi-monitor' + '.' + class_name)
         self.logger.debug('created Timed_Buffer')
-        #self.clients = dict()
         self.ttl = ttl
-        #self.last_flush_time = datetime.datetime.now()
         self.writer = writer
         self.flush()
     #end constructor
@@ -50,7 +48,7 @@ class Timed_Buffer:
         Checks if the buffer is old enough and it's time to flush the buffer
         to the writer
         """
-        now=datetime.datetime.now()
+        now=datetime.utcnow()
 
         delta=now - self.last_flush_time
 
@@ -70,7 +68,7 @@ class Timed_Buffer:
         and resets the timer.
         """
 
-        self.last_flush_time = datetime.datetime.now()
+        self.last_flush_time = datetime.utcnow()
         self.logger.debug('flushing buffer')
 
         #remove all the old entries in the db so we only show the ones that have

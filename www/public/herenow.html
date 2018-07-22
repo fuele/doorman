@@ -16,7 +16,9 @@ function refreshClients(){
 	    success: function (data) {
 	        $.each(data, (i, item) => {
                     console.log(item);
-		    $('#clientList').append('<li>' + item.nick + '</li>');
+		    var timestamp = new Date(item.time).toLocaleString();
+		    console.log(timestamp) 
+		    $('#clientList').append('<li>' + timestamp +" : "+ item.nick + '</li>');
 		});
 	    }
     });

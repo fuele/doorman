@@ -6,7 +6,7 @@ This scans for all wifi traffic that it can find and then outputs the client inf
 to the disk
 
 """
-
+from datetime import datetime
 import logging
 from scapy.all import *
 import packet
@@ -42,6 +42,7 @@ class Sniffer:
                 p = packet.Packet()
                 p.src_mac = scappy_packet.addr2
                 p.dst_mac = scappy_packet.addr1
+                p.time = datetime.utcnow()
             
                 if(p.dst_mac == router_mac ):
                     self.logger.debug('found an interesting packet')
