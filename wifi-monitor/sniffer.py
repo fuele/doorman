@@ -79,7 +79,7 @@ class Sniffer:
 
         while self.running:
             try:
-                sniff(filter=self.capture_filter, iface="wlan0", prn=self.process_packet, store=0, stop_filter=self.should_stop )
+                sniff(filter=self.capture_filter,iface="wlan0", prn=self.process_packet, store=0, stop_filter=self.should_stop )
             except Exception as e:
                 self.logger.error('Unhandled exception in sniff function')
                 self.logger.error(repr(e))

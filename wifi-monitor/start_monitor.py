@@ -11,7 +11,7 @@ import signal
 
 def create_logger():
     logger = logging.getLogger('wifi-monitor')
-    logger.setLevel(logging.DEBUG)
+    logger.setLevel(logging.INFO)
 
     ch = logging.StreamHandler()
     ch.setLevel(logging.DEBUG)
