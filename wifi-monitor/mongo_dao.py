@@ -64,11 +64,12 @@ class Mongo_DAO:
     #end function
 
     def find(self, collection, query, formatting):
+        """
+        Performes a search in the database for the query
+        """
         self.logger.debug('Entering find')
         self.logger.debug('collection' + collection + ' query ' + str(query))
-        col = self.db.macNicknames
-
-        self.logger.debug(col)
+        col = self.db[collection]
 
         cursor = col.find(query, formatting) 
 
@@ -77,5 +78,22 @@ class Mongo_DAO:
         return cursor
     #end function
 
+    def update_one(self, collection, query, update):
+        """
+        updates a single document  
+        e.g.
+        update_one('uniqueClients',{'_id':'fdeee'},{'nick':'bob'},false)
+        upsert=true means it will insert into the collection if the query fails
+        """
+        self.logger.debug('updating document')
+        self.logger.debug('collection' + collection + ' query ' + str(query) +' update ' + str(update))
+
+
+        col = self.db[collection]
+
+        col.update_one(query,update)
+
+        self.logger.debug('update successful')
+    #end function
 
 #end class

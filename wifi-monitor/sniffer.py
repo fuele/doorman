@@ -20,10 +20,10 @@ class Sniffer:
 
 
 
-    def __init__(self, writer):
+    def __init__(self):
         class_name=os.path.basename(__name__)
         self.logger = logging.getLogger('wifi-monitor' + '.'+class_name)
-        self.writer=writer
+        self.writers=list()
         self.running=False
         self.router_mac = '94:10:3e:75:20:96'
         self.capture_filter='ether dst host ' + self.router_mac
@@ -47,6 +47,8 @@ class Sniffer:
                 p.src_mac = scappy_packet.addr2
                 p.dst_mac = scappy_packet.addr1
                 p.time = datetime.utcnow()
+
+                self.logger.debug('dst mac='+p.dst_mac)
             
                 if(p.dst_mac == self.router_mac ):
                     self.logger.debug('found an interesting packet')
@@ -65,9 +67,18 @@ class Sniffer:
         """
         Records a list of all clients
         """
-        self.writer.write(p)
-
+        for writer in self.writers:
+            writer.write(p)
     #end log_client
+
+    def add_writer(self,writer):
+        """
+        Adds a new writer to the list of objects that will be written to with each packet
+        """
+        self.writers.append(writer)
+
+
+    #end funciton
 
     def start(self):
         """
@@ -80,6 +91,7 @@ class Sniffer:
         while self.running:
             try:
                 sniff(filter=self.capture_filter,iface="wlan0", prn=self.process_packet, store=0, stop_filter=self.should_stop )
+                #sniff(iface="wlan0", prn=self.process_packet, store=0, stop_filter=self.should_stop )
             except Exception as e:
                 self.logger.error('Unhandled exception in sniff function')
                 self.logger.error(repr(e))
