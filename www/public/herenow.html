@@ -9,7 +9,8 @@ $(document).ready(()=>{
 });
 
 function refreshClients(){
-    $('#clientList').empty()
+    $('#clientList').empty();
+    $('#clientList').append('<tr><th>Device</th><th>Last seen</th></tr>');
     $.ajax({
 	    dataType: "json",
             url: '/api/clients',
@@ -18,7 +19,8 @@ function refreshClients(){
                     console.log(item);
 		    var timestamp = new Date(item.time).toLocaleString();
 		    console.log(timestamp) 
-		    $('#clientList').append('<li>' + timestamp +" : "+ item.nick + '</li>');
+		    $('#clientList').append('<tr><td>' + item.nick+ '</td><td>' +timestamp +'</td></tr>');
+		   // $('#clientList').append('<tr><td>test</td></tr>');
 		});
 	    }
     });
@@ -30,8 +32,8 @@ function refreshClients(){
 	<h1>Who's here now?</h1>
 	<button id="button" onclick="refreshClients()">Refresh</button>
 	<div>
-		<ul id='clientList'>
-		</ul>
+		<table id='clientList'>
+		</table>
 	</div>
 </body>
 </html>
