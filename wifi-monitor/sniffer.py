@@ -10,7 +10,7 @@ from datetime import datetime
 import logging
 from scapy.all import *
 import packet
-import file_recorder
+import sys
 
 
 class Sniffer:
@@ -18,10 +18,15 @@ class Sniffer:
     A wireless network monitor that looks for clients and available networks
     """
 
-    def __init__(self, recorder):
+
+
+    def __init__(self):
         class_name=os.path.basename(__name__)
         self.logger = logging.getLogger('wifi-monitor' + '.'+class_name)
-        self.recorder = recorder
+        self.writers=list()
+        self.running=False
+        self.router_mac = '94:10:3e:75:20:96'
+        self.capture_filter='ether dst host ' + self.router_mac
     #end constructor
 
 
@@ -30,7 +35,6 @@ class Sniffer:
         Creates a custom packet object and sends it to further processing
         """
 
-        router_mac = '94:10:3e:75:20:96'
 
         #we are only interested in sniffing wifi packets
         if scappy_packet.haslayer(Dot11):
@@ -43,10 +47,12 @@ class Sniffer:
                 p.src_mac = scappy_packet.addr2
                 p.dst_mac = scappy_packet.addr1
                 p.time = datetime.utcnow()
+
+                self.logger.debug('dst mac='+p.dst_mac)
             
-                if(p.dst_mac == router_mac ):
+                if(p.dst_mac == self.router_mac ):
                     self.logger.debug('found an interesting packet')
-                    self.log_client(p)
+                    self.write(p)
 
             #get SSID from beacons
             #if(packet.type == 0 and packet.subtype == 8 and packet.info is not b''):
@@ -57,41 +63,79 @@ class Sniffer:
         #end if dot11 packet
     #end process_packet
 
-    def log_client(self, p):
+    def write(self, p):
         """
         Records a list of all clients
         """
-        self.recorder.add_client_packet(p)
-
+        for writer in self.writers:
+            writer.write(p)
     #end log_client
+
+    def add_writer(self,writer):
+        """
+        Adds a new writer to the list of objects that will be written to with each packet
+        """
+        self.writers.append(writer)
+
+
+    #end funciton
 
     def start(self):
         """
         begins to sniff all traffic off the air.
         """
         self.logger.info('starting wireless sniffer')
-        sniff(iface="wlan0", prn=self.process_packet, store=0)
+        self.logger.info('Using capture filter: ' + self.capture_filter)
+        self.running = True
+
+        while self.running:
+            try:
+                sniff(filter=self.capture_filter,iface="wlan0", prn=self.process_packet, store=0, stop_filter=self.should_stop )
+                #sniff(iface="wlan0", prn=self.process_packet, store=0, stop_filter=self.should_stop )
+            except Exception as e:
+                self.logger.error('Unhandled exception in sniff function')
+                self.logger.error(repr(e))
+            #end try catch
+        #end while true
+
         self.logger.info('shut down wireless sniffer')
     #end start
+
+    def stop(self):
+        """
+        tells the sniffer to stop listening for packets
+        """
+        self.logger.info('stopping sniffer')
+        self.running = False
+        sys.exit()
+    #end function
+
+
+    def should_stop(self,p):
+        """
+        Tells the sniffer whether it should keep running or not
+        """
+        return not self.running
+    #end function
 
 #end class
 
 
-def main():
-    script_name=os.path.basename(__file__)
-    logger = logging.getLogger(script_name)
+#def main():
+#    script_name=os.path.basename(__file__)
+#    logger = logging.getLogger(script_name)
     
     
-    logger.info('Starting program')
+#    logger.info('Starting program')
 
-    logger.info('Begin sniffing')
+#    logger.info('Begin sniffing')
     #store=0 tells it not to cache packets in ram, but discard them after use
-    sniff(iface="wlan0", prn=process_packet, store=0)
+#    sniff(iface="wlan0", prn=process_packet, store=0)
 
-    logger.info('Exiting program')
+#    logger.info('Exiting program')
 
 
-if (__name__ == "__main__"):
-    main()
+#if (__name__ == "__main__"):
+#    main()
 
 

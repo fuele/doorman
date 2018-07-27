@@ -7,6 +7,8 @@ import timed_buffer
 import mongo_writer
 import mongo_dao
 import nickname_resolver
+import signal
+import unique_client_writer
 
 def create_logger():
     logger = logging.getLogger('wifi-monitor')
@@ -26,6 +28,7 @@ def create_logger():
     logger.addHandler(fh)
     return logger
 
+
 def main():
     logger = create_logger()
     logger.info('Starting program')
@@ -33,9 +36,20 @@ def main():
     dao = mongo_dao.Mongo_DAO()
     dao.connect()
     
-    writer = mongo_writer.Mongo_Writer(dao)
-    buff = timed_buffer.Timed_Buffer(writer,60)
-    monitor = sniffer.Sniffer(buff)
+    #writer = mongo_writer.Mongo_Writer(dao)
+    #buff = timed_buffer.Timed_Buffer(writer,60)
+
+    unique_writer = unique_client_writer.Unique_Client_Writer()
+    unique_writer.set_dao(dao)
+
+    monitor = sniffer.Sniffer()
+    monitor.add_writer(unique_writer)
+    
+    def keyboard_interrupt_handler(signum, frame):
+        logger.info('Program terminated by keyboard interrupt')
+        monitor.stop()
+
+    signal.signal(signal.SIGINT, keyboard_interrupt_handler)
 
     monitor.start()
 

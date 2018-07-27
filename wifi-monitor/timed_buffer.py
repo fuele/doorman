@@ -22,7 +22,7 @@ class Timed_Buffer:
         self.flush()
     #end constructor
 
-    def add_client_packet(self, client_packet):
+    def write(self, client_packet):
         """
         If the buffer does not have a packet from this client's
         MAC then it will add it to the collection.

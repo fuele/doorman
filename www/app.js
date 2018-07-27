@@ -7,7 +7,7 @@ const dbconfig = require('./config/db')
 
 var MongoClient = require('mongodb').MongoClient
 var dbName = 'doorman'
-var currentClientsCollection = 'currentClients'
+var currentClientsCollection = 'uniqueClients'
 var nicknameCollection = 'macNicknames'
 
 var db
