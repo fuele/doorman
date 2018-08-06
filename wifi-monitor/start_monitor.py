@@ -1,5 +1,6 @@
 #!/usr/bin/python3
 
+import sys
 import logging
 import logging.handlers
 import sniffer
@@ -9,6 +10,7 @@ import mongo_dao
 import nickname_resolver
 import signal
 import unique_client_writer
+import unix_socket_writer 
 
 def create_logger():
     logger = logging.getLogger('wifi-monitor')
@@ -33,17 +35,26 @@ def main():
     logger = create_logger()
     logger.info('Starting program')
 
-    dao = mongo_dao.Mongo_DAO()
-    dao.connect()
+    #dao = mongo_dao.Mongo_DAO()
+    #dao.connect()
     
     #writer = mongo_writer.Mongo_Writer(dao)
     #buff = timed_buffer.Timed_Buffer(writer,60)
 
-    unique_writer = unique_client_writer.Unique_Client_Writer()
-    unique_writer.set_dao(dao)
+    #unique_writer = unique_client_writer.Unique_Client_Writer()
+    #unique_writer.set_dao(dao)
+
+    sock_writer = unix_socket_writer.Unix_Socket_Writer()
 
     monitor = sniffer.Sniffer()
-    monitor.add_writer(unique_writer)
+    try:
+        sock_writer.connect('./uds')
+        monitor.add_writer(sock_writer)
+    except Exception as err:
+        logger.error('Failed to connect socket_writer')
+        logger.error(err)
+        sys.exit(1)
+
     
     def keyboard_interrupt_handler(signum, frame):
         logger.info('Program terminated by keyboard interrupt')

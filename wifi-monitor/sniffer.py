@@ -27,32 +27,24 @@ class Sniffer:
         self.running=False
         self.router_mac = '94:10:3e:75:20:96'
         self.capture_filter='ether dst host ' + self.router_mac
+        self.logger.debug('Created ' + class_name)
     #end constructor
 
-
-    def process_packet(self, scappy_packet):
+    def process_packet(self, scapy_packet):
         """
         Creates a custom packet object and sends it to further processing
         """
-
-
+        self.logger.debug('got a packet')
         #we are only interested in sniffing wifi packets
-        if scappy_packet.haslayer(Dot11):
+        if scapy_packet.haslayer(Dot11):
        
             #The 802.11 protocol occaionslly calls to send packets out to clear the air from contention
             #and will send packets to the access point with no source MAC. Since we are only interested
             #in tracking clients and AP beacons, we want to ignore these packets
-            if(scappy_packet.addr2 is not None):
-                p = packet.Packet()
-                p.src_mac = scappy_packet.addr2
-                p.dst_mac = scappy_packet.addr1
-                p.time = datetime.utcnow()
+            if(scapy_packet.addr2 is not None):
 
-                self.logger.debug('dst mac='+p.dst_mac)
-            
-                if(p.dst_mac == self.router_mac ):
-                    self.logger.debug('found an interesting packet')
-                    self.write(p)
+                self.logger.debug('src mac='+ scapy_packet.addr2 + 'dst mac='+scapy_packet.addr1)
+                self.write(scapy_packet)
 
             #get SSID from beacons
             #if(packet.type == 0 and packet.subtype == 8 and packet.info is not b''):
