@@ -30,13 +30,12 @@ while True:
         while True:
             data = connection.recv(4096)
             if data:
-                print('Received['+ str(i)+']' + str(data))
+                #print('Received['+ str(i)+']' + str(data))
                 p = pickle.loads(data)
 
-                print(p.addr1)
-
-
-
+                #print(p.addr1)
+                print(str(dir(p)))
+                #print(str(len(p.payload)))
                 i+=1
             else:
                 print('client sent no more data')
