@@ -30,22 +30,22 @@ class Sniffer:
     #end constructor
 
 
-    def process_packet(self, scappy_packet):
+    def process_packet(self, scapy_packet):
         """
         Creates a custom packet object and sends it to further processing
         """
 
 
         #we are only interested in sniffing wifi packets
-        if scappy_packet.haslayer(Dot11):
+        if scapy_packet.haslayer(Dot11):
        
             #The 802.11 protocol occaionslly calls to send packets out to clear the air from contention
             #and will send packets to the access point with no source MAC. Since we are only interested
             #in tracking clients and AP beacons, we want to ignore these packets
-            if(scappy_packet.addr2 is not None):
+            if(scapy_packet.addr2 is not None):
                 p = packet.Packet()
-                p.src_mac = scappy_packet.addr2
-                p.dst_mac = scappy_packet.addr1
+                p.src_mac = scapy_packet.addr2
+                p.dst_mac = scapy_packet.addr1
                 p.time = datetime.utcnow()
 
                 self.logger.debug('dst mac='+p.dst_mac)
