@@ -1,6 +1,6 @@
 """
 This file is a proof of concept script meant to explore
-how to parse wireless packets with scappy.
+how to parse wireless packets with scapy.
 It runs in an infinite loop and merely prints the fields we
 are interested in on the screen ad infinitum
 """
